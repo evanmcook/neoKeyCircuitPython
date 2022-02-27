@@ -63,7 +63,8 @@ while True:
 
     if not button.value and button_state:
         print("Button released.")
-        
+        print("when released the brightness was")
+        print(brightVal)
         button_state = False
 
     if touch.value and not touch_state:
@@ -72,13 +73,15 @@ while True:
         touch_state = True
     if not touch.value and touch_state:
         print("Untouched!")
+        print(brightVal)
         currentBright = brightVal
         
-        if currentBright != 1.0:
+        if currentBright >= 0.99:
+            currentBright = 0.1
+            brightVal = 0.1
+            pixel.brightness = 0.1
+        elif currentBright < 0.99:
             inc = currentBright + 0.1
             pixel.brightness = inc
             brightVal = inc
-        elif currentBright == 1.0: 
-            pixel.brightness = 0.1
-            brightVal = 0.1
         touch_state = False
