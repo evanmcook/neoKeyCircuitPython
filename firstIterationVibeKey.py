@@ -19,6 +19,7 @@ print("NeoKey Trinkey HID")
 # create the pixel and turn it off
 pixel = neopixel.NeoPixel(board.NEOPIXEL, 1, brightness=0.1)
 pixel.fill(0x0)
+brightVal = 0.1
 
 time.sleep(1)  # Sleep for a bit to avoid a race condition on some systems
 keyboard = Keyboard(usb_hid.devices)
@@ -45,7 +46,7 @@ def make_keystrokes(keys, delay):
         keyboard.release_all()  # ..."Release"!
     time.sleep(delay)
     
-def setbutton():
+def setColor():
     hexadecimal = ""+''.join(random.choice('ABCDEF0123456789') for i in range(6))
     newhex = int(hexadecimal, 16)
     # print(newhex)
@@ -55,22 +56,32 @@ def setbutton():
     
 while True:
     if button.value and not button_state:
-        set = setbutton()
+        set = setColor()
         print(set)
         print("Button pressed.")
         button_state = True
 
     if not button.value and button_state:
-       # pixel.fill(0x0)
         print("Button released.")
-        
+        print("when released the brightness was")
+        print(brightVal)
         button_state = False
 
     if touch.value and not touch_state:
         print("Touched!")
-        pixel.fill((0, 255, 0))
+        
         touch_state = True
     if not touch.value and touch_state:
         print("Untouched!")
-        pixel.fill(0x0)
+        print(brightVal)
+        currentBright = brightVal
+        
+        if currentBright >= 0.99:
+            currentBright = 0.1
+            brightVal = 0.1
+            pixel.brightness = 0.1
+        elif currentBright < 0.99:
+            inc = currentBright + 0.1
+            pixel.brightness = inc
+            brightVal = inc
         touch_state = False
